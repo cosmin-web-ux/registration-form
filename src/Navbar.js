@@ -8,28 +8,49 @@ import Search from '@material-ui/icons/Search';
 import Switch from '@material-ui/core/Switch';
 import withStyles from '@material-ui/core/styles/withStyles';
 import styles from './styles/NavbarStyles';
+import { ThemeContext } from './contexts/ThemeContext';
+import { withLanguageContext } from './contexts/LanguageContext';
 
+const content = {
+	english: {
+		search: 'Search',
+		flag: '⛳',
+	},
+	french: {
+		search: 'Chercher',
+		flag: '🏁',
+	},
+	spanish: {
+		search: 'Buscar',
+		flag: '🚩',
+	},
+};
 export class Navbar extends Component {
+	static contextType = ThemeContext;
+
 	render() {
+		const { isDarkMode, toggleTheme } = this.context;
 		const { classes } = this.props;
+		const { language } = this.props.languageContext;
+		const { search, flag } = content[language];
 		return (
 			<div className={classes.root}>
-				<AppBar position="static" color="primary">
+				<AppBar position="static" color={isDarkMode ? 'default' : 'primary'}>
 					<Toolbar variant="dense">
 						<IconButton className={classes.menuButton} color="inherit">
-							<span>🚩</span>
+							<span>{flag}</span>
 						</IconButton>
 						<Typography className={classes.title} variant="h6" color="inherit">
 							App Title
 						</Typography>
-						<Switch />
+						<Switch onChange={toggleTheme} />
 						<div className={classes.grow} />
 						<div className={classes.search}>
 							<div className={classes.searchIcon}>
 								<Search />
 							</div>
 							<InputBase
-								placeholder="Search..."
+								placeholder={`${search}...`}
 								classes={{
 									root: classes.inputRoot,
 									input: classes.inputInput,
@@ -43,4 +64,4 @@ export class Navbar extends Component {
 	}
 }
 
-export default withStyles(styles)(Navbar);
+export default withLanguageContext(withStyles(styles)(Navbar));
